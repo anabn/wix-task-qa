@@ -1,0 +1,17 @@
+{
+  "name": "wix-task-qa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test:debug": "npx playwright test tests/basic.spec.ts --headed",
+    "test": "npx playwright test --workers=3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "1.49.1",
+    "@types/node": "22.10.7"
+  }
+}
