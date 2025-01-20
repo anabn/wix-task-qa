@@ -17,11 +17,13 @@ export class ProductPage extends BasePage {
     }
 
     async addToCart() {
+        await this.page.locator(locators.addToCartButton).waitFor({ state: 'visible' });
         await this.page.locator(locators.addToCartButton).click();
+        await this.page.waitForLoadState('networkidle', { timeout: 20000 });
     }
 
-    async confirmationMessageShouldAppear() {
-        this.page.on('dialog', dialog => dialog.accept());
+    async acceptConfirmationMessage() {
+        this.page.once('dialog', dialog => dialog.accept());
     }
 
 }
