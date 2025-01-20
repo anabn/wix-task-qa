@@ -6,5 +6,6 @@ export const locators = {
     productsNames : `${productDetailRow}/td[2]`,
     productPrice : `${productDetailRow}/td[3]`,
 
-    totalAmout: '//h3[@id="totalp"]',
+    totalAmount: '//h3[@id="totalp"]',
+    placeOrderButton: '//button[text() = "Place Order"]',
 }

@@ -2,33 +2,79 @@ import { defineConfig, expect, test } from "@playwright/test";
 import { Pages } from "../pageObjects/pages";
 import { Tab } from "../enums/navbarTabEnum";
 import { Categories } from "../enums/categoriesEnum";
+import { Product } from "../models/product";
+import { User } from "../models/user";
 
-test.describe('@P1 @Regression user can add products to cart', () => { 
-  const PHONE_TITLE: string = 'Nokia lumia 1520';
-  const PHONE_PRICE: number = 820;
+const phone: Product = {
+  title: 'Nokia lumia 1520',
+  price: 820
+};
+
+const laptop: Product = {
+  title: 'Dell i7 8gb',
+  price: 700
+};
+
+const person: User = {
+  name: 'Anna',
+  country: 'Ukraine',
+  city: 'Kyiv',
+  creditCard: 1234567891234567,
+  month: 8,
+  year: 1999,
+};
+
+test.describe('@P1 @Regression Users can purchase the selected products', () => {   
 
   test.beforeEach(async ({ page }) => {
-    await page.goto('/index.html');
+    await page.goto('/');
   });
   
-  test("user can add products to cart and receive total amount", async ({ page }) => {
+  test("Users can add products to their cart and view the total amount", async ({ page }) => {
     const pages = Pages(page);
     await pages.productStoreHome.clickOnCategory(Categories.PHONES);
-    await pages.productStoreHome.clickOnProduct(PHONE_TITLE);
-    await pages.productPage.productNameShouldBe(PHONE_TITLE);
-    await pages.productPage.productPriceShouldBe(PHONE_PRICE);
+    await pages.productStoreHome.clickOnProduct(phone.title);
     await pages.productPage.addToCart();
-    await pages.productPage.confirmationMessageShouldAppear();
+    await pages.productPage.acceptConfirmationMessage();
+    await pages.productPage.productNameShouldBe(phone.title);
+    await pages.productPage.productPriceShouldBe(phone.price);
+
+    await pages.productStoreNavbar.navigateToTab(Tab.HOME);
+    await pages.productStoreHome.clickOnCategory(Categories.LAPTOPS);
+    await pages.productStoreHome.clickOnProduct(laptop.title);
+    await pages.productPage.productNameShouldBe(laptop.title);
+    await pages.productPage.productPriceShouldBe(laptop.price);
+    await pages.productPage.addToCart();
+    await pages.productPage.acceptConfirmationMessage();
 
     await pages.productStoreNavbar.navigateToTab(Tab.CART);
-    await pages.productsCart.countOfProductsIs(1);
-    await pages.productsCart.shouldContainFollowingProducts(PHONE_TITLE);
+    await pages.productsCart.countOfProductsIs(2);
+    await pages.productsCart.shouldContainFollowingProducts(laptop.title, phone.title);
     await pages.productsCart.shouldNotContainFollowingProduct("not-exisiting product");
-    await pages.productsCart.totalAmountIs(PHONE_PRICE);
+    await pages.productsCart.totalAmountIs(phone.price + laptop.price);
   });
 
-  test("@P1 @Regression verify user is unable to login with invalid credentials", async ({ page }) => {
+  test("Users can place an order for a selected product without needing to register", async ({ page }) => {
     const pages = Pages(page);
+    await pages.productStoreHome.clickOnProduct(phone.title);
+    await pages.productPage.addToCart();
+    await pages.productPage.acceptConfirmationMessage();
+    await pages.productStoreNavbar.navigateToTab(Tab.CART);
+    await pages.productsCart.countOfProductsIs(1);
+    await pages.productsCart.totalAmountIs(phone.price);
+    await pages.productsCart.submitOrder();
+
+    await pages.placeOrderPage.isPresent();
+    await pages.placeOrderPage.totalShouldBe(phone.price);
+
+    await pages.placeOrderPage.enterName(person.name);
+    await pages.placeOrderPage.enterCountry(person.country);
+    await pages.placeOrderPage.enterCity(person.city);
+    await pages.placeOrderPage.enterCard(person.creditCard);
+    await pages.placeOrderPage.enterMonth(person.month);
+    await pages.placeOrderPage.enterYear(person.year);
+    await pages.placeOrderPage.clickOnPurchaseButton();
+    await pages.placeOrderPage.successSubmissionOrderIsPresent();
   });
 
 });

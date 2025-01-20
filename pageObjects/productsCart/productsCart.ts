@@ -31,7 +31,11 @@ export class ProductsCart extends BasePage {
     }
 
     async totalAmountIs(total: number) {
-        await expect(this.page.locator(locators.productPrice)).toContainText(`${total}`);
+        await expect(this.page.locator(locators.totalAmount)).toContainText(`${total}`);
+    }
+
+    async submitOrder() {
+        await this.page.locator(locators.placeOrderButton).click();
     }
 
 }

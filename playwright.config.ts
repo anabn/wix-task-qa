@@ -8,7 +8,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'https://www.demoblaze.com',
+    baseURL: 'https://www.demoblaze.com/index.html',
 
     trace: 'on-first-retry',
   },
@@ -19,15 +19,10 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
 
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
-
-    // {
-    //   name: 'webkit',
-    //   use: { ...devices['Desktop Safari'] },
-    // },
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+    },
 
   ],
 
