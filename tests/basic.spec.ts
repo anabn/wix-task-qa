@@ -66,13 +66,12 @@ test.describe('@P1 @Regression Users can purchase the selected products', () => 
 
     await pages.placeOrderPage.isPresent();
     await pages.placeOrderPage.totalShouldBe(phone.price);
-
-    await pages.placeOrderPage.enterName(person.name);
-    await pages.placeOrderPage.enterCountry(person.country);
-    await pages.placeOrderPage.enterCity(person.city);
-    await pages.placeOrderPage.enterCard(person.creditCard);
-    await pages.placeOrderPage.enterMonth(person.month);
-    await pages.placeOrderPage.enterYear(person.year);
+    await (await pages.placeOrderPage.fillField('name')).withValue(person.name);
+    await (await pages.placeOrderPage.fillField('country')).withValue(person.country);
+    await (await pages.placeOrderPage.fillField('city')).withValue(person.city);
+    await (await pages.placeOrderPage.fillField('card')).withValue(person.creditCard);
+    await (await pages.placeOrderPage.fillField('month')).withValue(person.month);
+    await (await pages.placeOrderPage.fillField('year')).withValue(person.year);
     await pages.placeOrderPage.clickOnPurchaseButton();
     await pages.placeOrderPage.successSubmissionOrderIsPresent();
   });
